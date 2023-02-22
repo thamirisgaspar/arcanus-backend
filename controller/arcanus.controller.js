@@ -41,6 +41,8 @@ module.exports.getArcanus = async (req, res) => {
                 return;
             }
 
+            console.log(result)
+
             res.send({
                 status: true,
                 result: result.rows[0]
