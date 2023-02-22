@@ -15,6 +15,8 @@ module.exports.signup = async (req, res) => {
                 status: false,
                 msg: err
             });
+
+            return;
         }
 
         if (result.rows.length > 0){
@@ -34,6 +36,8 @@ module.exports.signup = async (req, res) => {
                         status: false,
                         msg: err
                     });
+
+                    return;
                 }
 
                 res.send({
@@ -56,6 +60,8 @@ module.exports.login = async (req, res) => {
                 status: false,
                 msg: err
             });
+
+            return;
         }
 
         if (result.rows.length > 0) {
@@ -95,6 +101,8 @@ module.exports.forgetPassword = async (req, res) => {
                 status: false,
                 msg: err
             });
+
+            return;
         }
 
         if (result.rows.length > 0) {
@@ -116,6 +124,8 @@ module.exports.forgetPassword = async (req, res) => {
                         status: false,
                         msg: err
                     });
+
+                    return;
                 }
 
                 let user = {
@@ -153,6 +163,8 @@ module.exports.resetPassword = async (req, res) => {
                 status: false,
                 msg: err
             });
+
+            return;
         }
 
         var data = {
@@ -178,6 +190,8 @@ module.exports.resetPassword = async (req, res) => {
                         status: false,
                         msg: err
                     });
+
+                    return;
                 }
 
                 let user = {
