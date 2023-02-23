@@ -10,7 +10,9 @@ router.post('/setSkills', arcanusController.setSkills);
 router.post('/getOthers', arcanusController.getOthers);
 router.post('/setOthers', arcanusController.setOthers);
 router.post('/changed', arcanusController.changed);
-router.post('/getGrimoire', arcanusController.getGrimoire);~
+router.post('/getGrimoire', arcanusController.getGrimoire);
 router.post('/setGrimoire', arcanusController.setGrimoire);
+router.post('/getNotes', arcanusController.getNotes);
+router.post('/setNotes', arcanusController.setNotes);
 
 module.exports = router;

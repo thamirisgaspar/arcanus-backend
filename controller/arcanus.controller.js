@@ -439,3 +439,83 @@ module.exports.setGrimoire = async (req, res) => {
         }
     });
 }
+
+module.exports.getNotes = async (req, res) => {
+    let qry = `SELECT * FROM NOTES WHERE arcanusid = ${req.body.arcanusId}`;
+
+    db.query(qry, async (err, result) => {
+        if (err) {
+            res.send({
+                status: false,
+                msg: err
+            });
+
+            return;
+        }
+
+        if (result.rows.length > 0) {
+            res.send({
+                status: true,
+                result: result.rows[0]
+            });
+        } else {
+            res.send({
+                status: false,
+                msg: 'Notas não encontradas'
+            });
+        }
+    });
+}
+
+module.exports.setNotes = async (req, res) => {
+    let qry = `SELECT * FROM NOTES WHERE arcanusid = ${req.body.arcanusId}`;
+
+    db.query(qry, async (err, result) => {
+        if (err) {
+            res.send({
+                status: false,
+                msg: err
+            });
+
+            return;
+        }
+
+        if (result.rows.length > 0) { //update
+            let upd = `UPDATE NOTES SET notes = '${req.body.notes}' WHERE arcanusid = ${req.body.arcanusId}`;
+
+            db.query(upd, async (err) => {
+                if (err) {
+                    res.send({
+                        status: false,
+                        msg: err
+                    });
+        
+                    return;
+                }
+
+                res.send({
+                    status: true,
+                    msg: 'Notas alteradas com sucess0'
+                });
+            });
+        } else { //insert
+            let ist = `INSERT INTO NOTES (arcanusid, notes) VALUES (${req.body.arcanusId}, '${req.body.notes}')`;
+
+            db.query(ist, async (err) => {
+                if (err) {
+                    res.send({
+                        status: false,
+                        msg: err
+                    });
+        
+                    return;
+                }
+
+                res.send({
+                    status: true,
+                    msg: 'Notas inseridas com sucesso'
+                });
+            });
+        }
+    })
+}
