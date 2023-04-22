@@ -201,3 +201,115 @@ module.exports.setSkills = async (req, res) => {
         }
     });
 }
+
+module.exports.getOthers = async (req, res) => {
+    let qry = `SELECT O.* FROM OTHERS O INNER JOIN ARCANUS A ON O.arcanusid = A.id WHERE A.userid = ${req.body.userId}`;
+
+    db.query(qry, async (err, result) => {
+        if (err) {
+            res.send({
+                status: false,
+                msg: err
+            });
+
+            return;
+        }
+
+        if (result.rows.length > 0) {
+            res.send({
+                status: true,
+                result: result.rows[0]
+            });
+        } else {
+            res.send({
+                status: false,
+                msg: 'Nenhuma informação encontrada'
+            });
+        }
+    });
+}
+
+module.exports.setOthers = async (req, res) => {
+    let qry = `SELECT * FROM OTHERS WHERE arcanusid = ${req.body.arcanusId}`;
+
+    db.query(qry, async (err, result) => {
+        if (err) {
+            res.send({
+                status: false,
+                msg: err
+            });
+
+            return;
+        }
+
+        if (result.rows.length > 0) { //update
+            let upd = `UPDATE OTHERS SET sanity = ${req.body.sanity}, mana = ${req.body.mana}, lifepoints = ${req.body.lifePoints}, ` +
+                      `bruised = ${req.body.bruised}, hurted = ${req.body.hurted}, injured = ${req.body.injured}, ` +
+                      `seriously = ${req.body.seriously}, beaten = ${req.body.beaten}, crippled = ${req.body.crippled}, ` +
+                      `incapacitated = ${req.body.incapacitated}, unconscious = ${req.body.unconscious} ` +
+                      `WHERE arcanusid = ${req.body.arcanusId}`;
+
+            db.query(upd, async (err) => {
+                if (err) {
+                    res.send({
+                        status: false,
+                        msg: err
+                    });
+        
+                    return;
+                }
+                
+                res.send({
+                status: true,
+                msg: 'Informações alteradas com sucesso!'
+                });
+            });
+        } else { //insert
+            let ist = `INSERT INTO OTHERS (arcanusid, sanity, mana, lifepoints, bruised, hurted, injured, seriously, ` +
+                      `beaten, crippled, incapacitated, unconscious) VALUES (${req.body.arcanusId}, ${req.body.sanity}, ` +
+                      `${req.body.mana}, ${req.body.lifePoints}, ${req.body.bruised}, ${req.body.hurted}, ${req.body.injured}, ` +
+                      `${req.body.seriously}, ${req.body.beaten}, ${req.body.crippled}, ${req.body.incapacitated}, ` +
+                      `${req.body.unconscious})`;
+
+            db.query(ist, async (err) => {
+                if (err) {
+                    res.send({
+                        status: false,
+                        msg: err
+                    });
+        
+                    return;
+                }
+
+                res.send({
+                    status: true,
+                    msg: 'Informações salvas com sucesso!'
+                });
+            });
+        }
+    });
+}
+
+module.exports.changed = async (req, res) => {
+    let upd = `UPDATE OTHERS SET sanity = ${req.body.sanity}, mana = ${req.body.mana}, lifepoints = ${req.body.lifePoints}, ` +
+                      `bruised = ${req.body.bruised}, hurted = ${req.body.hurted}, injured = ${req.body.injured}, ` +
+                      `seriously = ${req.body.seriously}, beaten = ${req.body.beaten}, crippled = ${req.body.crippled}, ` +
+                      `incapacitated = ${req.body.incapacitated}, unconscious = ${req.body.unconscious} ` +
+                      `WHERE arcanusid = ${req.body.arcanusId}`;
+
+    db.query(upd, async (err, result) => {
+        if (err) {
+            res.send({
+                status: false,
+                msg: err
+            });
+
+            return;
+        }
+
+        res.send({
+            status: true,
+            msg: 'Informações salvas com sucesso!'
+        });
+    });
+}
