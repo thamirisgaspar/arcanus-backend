@@ -1,32 +1,5 @@
 const db = require("../dbconnection");
 
-//validate if users has a arcanus file
-module.exports.validate = async (req, res) => {
-    let qry = `SELECT * FROM ARCANUS WHERE userid = ${req.body.userId}`;
-
-    db.query(qry, async (err, result) => {
-        if (err) {
-            res.send({
-                status: false,
-                msg: err
-            });
-
-            return;
-        }
-
-        if (result.rows.length > 0) {
-            res.send({
-                status: false,
-                msg: 'Usuário já possui personagem!'
-            });
-        } else {
-            res.send({
-                status: true
-            });
-        }
-    });
-}
-
 //get info and attributes of arcanus file
 module.exports.getArcanus = async (req, res) => {
     let qry = `SELECT ac.*, at.streight, at.dexterity, at.life, at.charisma, at.manipulation, at.apearence, at.perception, `+
@@ -100,14 +73,16 @@ module.exports.setArcanus = async (req, res) => {
                 });
             });
         } else { //insert
-            let ist = `with rows as (INSERT INTO ARCANUS (userid, char, class, chronicle, xp, background) VALUES (` +
-              `${req.body.userId}, '${req.body.char}', '${req.body.class}', '${req.body.chronicle}', ${req.body.xp}, '${req.body.background}') RETURNING id) `;
+            let ist = `with first as (INSERT INTO ARCANUS (userid, char, class, chronicle, xp, background) VALUES (` +
+              `${req.body.userId}, '${req.body.char}', '${req.body.class}', '${req.body.chronicle}', ${req.body.xp}, '${req.body.background}') RETURNING id), `;
 
-              ist = ist + `INSERT INTO ATTRIBUTES (arcanusid, streight, dexterity, life, charisma, manipulation, apearence, ` +
-                        `perception, intelligence, reasoning) VALUES ((select id from rows), 1, 1, 1, 1, 1, 1, 1, 1, 1), ` +
+            ist = ist + `second as (INSERT INTO ATTRIBUTES (arcanusid, streight, dexterity, life, charisma, manipulation, apearence, ` +
+                        `perception, intelligence, reasoning) VALUES ((select id from first), ${req.body.streight}, ` +
+                        `${req.body.dexterity}, ${req.body.life}, ${req.body.charisma}, ${req.body.manipulation}, ` +
+                        `${req.body.apearence}, ${req.body.perception}, ${req.body.intelligence}, ${req.body.reasoning}) RETURNING arcanusid) ` +
                         `INSERT INTO OTHERS (arcanusid, sanity, mana, lifepoints, bruised, hurted, injured, seriously, beaten, crippled, ` +
-                        `incapacitated, unconscious) VALUES ((select id from rows), 20, 20, 20, false, false, false, false, false, false, ` +
-                        `false, false);`
+                        `incapacitated, unconscious) VALUES ((select arcanusid from second), 20, 20, 20, false, false, false, false, false, false, ` +
+                        `false, false);`;
 
             db.query(ist, async (err) => {
                 if (err) {
@@ -123,7 +98,7 @@ module.exports.setArcanus = async (req, res) => {
                     status: true,
                     msg: 'Personagem cadastrado!'
                 });
-            })
+            });
         }
     });
 }
