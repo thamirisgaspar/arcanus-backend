@@ -7,13 +7,13 @@ module.exports.sendMail = async function (user, callback) {
         port: 465,
         secure: true, //true for 465, false for other ports
         auth: {
-            user: 'thata.arlekina@gmail.com',
-            pass: 'jzulmxtbhztnygjf'
+            user: 'arcanusgames23@gmail.com',
+            pass: 'motetozcvmoaogji'
         }
     });
 
     let mailOptions = {
-        from: '"Arcanum Oculltus" <thata.arlekina@gmail.com>', //sender address
+        from: '"Arcanum Oculltus" <arcanusgames23@gmail.com>', //sender address
         to: user.email, //list of receivers
         subject: user.subject, //subject line
         html: user.message
