@@ -71,12 +71,16 @@ module.exports.setArcanus = async (req, res) => {
                 });
             });
         } else { //insert
-            let ist = `with first as (INSERT INTO ARCANUS (userid, char, class, chronicle, xp, background) VALUES (${req.body.userId}, '${req.body.char}', '${req.body.class}', '${req.body.chronicle}', ${req.body.xp}, '${req.body.background}') RETURNING id),
-                        second as (INSERT INTO ATTRIBUTES (arcanusid, streight, dexterity, life, charisma, manipulation, apearence, perception, intelligence, reasoning) VALUES ((select id from first), ${req.body.streight}, ${req.body.dexterity}, ${req.body.life}, ${req.body.charisma}, ${req.body.manipulation}, ${req.body.apearence}, ${req.body.perception}, ${req.body.intelligence}, ${req.body.reasoning}) RETURNING arcanusid),
-                        third as (arcanusid, readness, sports, fight, dodge, empath, expression, intimidation, leadership, ruse, lip, animalempath, trades, conduction, tag, firegun, whitearms, perform, security, stealth, survivor, academic, it, financial, investigation, legal, language, medicine, pagan, government, science) VALUES ((select arcanusid from second), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) RETURNING arcanusid),
-                        forty as (arcanusid, sanity, mana, lifepoints, bruised, hurted, injured, seriously, beaten, crippled, incapacitated, unconscious) VALUES ((select arcanusid from third), 20, 20, 20,false, false, false, false, false, false, false, false) RETURNING arcanusid)
-                        INSERT INTO GRIMOIRE (arcanusid, animamentia, acquadefensia, ignispotentia, terraeresistentia, arialiteratus) VALUES ((select arcanusid from forty), 0, 0, 0, 0, 0);`;
-
+            let ist = `with first as (INSERT INTO ARCANUS (userid, char, class, chronicle, xp, background) VALUES (` +
+              `${req.body.userId}, '${req.body.char}', '${req.body.class}', '${req.body.chronicle}', ${req.body.xp}, '${req.body.background}') RETURNING id), `+
+              `second as (INSERT INTO ATTRIBUTES (arcanusid, streight, dexterity, life, charisma, manipulation, apearence, ` +
+              `perception, intelligence, reasoning) VALUES ((select id from first), ${req.body.streight}, ` +
+              `${req.body.dexterity}, ${req.body.life}, ${req.body.charisma}, ${req.body.manipulation}, ` +
+              `${req.body.apearence}, ${req.body.perception}, ${req.body.intelligence}, ${req.body.reasoning}) RETURNING arcanusid) ` +
+              `INSERT INTO OTHERS (arcanusid, sanity, mana, lifepoints, bruised, hurted, injured, seriously, beaten, crippled, ` +
+              `incapacitated, unconscious) VALUES ((select arcanusid from second), 20, 20, 20, false, false, false, false, false, false, ` +
+              `false, false);`;
+              
             db.query(ist, async (err) => {
                 if (err) {
                     res.send({
