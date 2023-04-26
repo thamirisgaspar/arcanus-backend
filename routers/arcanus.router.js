@@ -13,5 +13,7 @@ router.post('/getGrimoire', arcanusController.getGrimoire);
 router.post('/setGrimoire', arcanusController.setGrimoire);
 router.post('/getNotes', arcanusController.getNotes);
 router.post('/setNotes', arcanusController.setNotes);
+router.post('/getMagicaes', arcanusController.getMagicaes);
+router.post('/setMagicaes', arcanusController.setMagicaes);
 
 module.exports = router;

@@ -440,3 +440,34 @@ module.exports.setNotes = async (req, res) => {
         }
     })
 }
+
+module.exports.getMagicaes = async(req, res) => {
+    var qry = `SELECT M.* FROM MAGICAES M INNER JOIN ARCANUS A ON M.arcanusid = A.id WHERE A.userid = ${req.body.userId}`;
+
+    db.query(qry, async (err, result) => {
+        if (err) {
+            res.send({
+                status: false,
+                msg: err
+            });
+
+            return;
+        }
+
+        if (result.rows.length > 0) {
+            res.send({
+                status: true,
+                result: result.rows[0]
+            });
+        } else {
+            res.send({
+                status: false,
+                msg: 'Magicaes não encontradas'
+            });
+        }
+    });
+}
+
+module.exports.setMagicaes = async(req, res) => {
+    console.log(req.body.magicaes);
+}
