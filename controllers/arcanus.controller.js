@@ -273,3 +273,88 @@ module.exports.changed = async (req, res) => {
         });
     });
 }
+
+module.exports.getGrimoire = async (req, res) => {
+    let qry = `SELECT G.* FROM GRIMOIRE G INNER JOIN ARCANUS A ON G.arcanusid = A.id WHERE A.userid = ${req.body.userId}`;
+
+    db.query(qry, async (err, result) => {
+        if (err) {
+            res.send({
+                status: false,
+                msg: err
+            });
+
+            return;
+        }
+
+        if (result.rows.length > 0) {
+            res.send({
+                status: true,
+                result: result.rows[0]
+            });
+        } else {
+            res.send({
+                status: false,
+                msg: 'Grimorio não encontrado'
+            });
+        }
+    });
+}
+
+module.exports.setGrimoire = async (req, res) => {
+    console.log(req.body)
+    let qry = `SELECT * FROM GRIMOIRE WHERE arcanusid = ${req.body.arcanusId}`;
+
+    db.query(qry, async (err, result) => {
+        if (err) {
+            res.send({
+                status: false,
+                msg: err
+            });
+
+            return;
+        }
+
+        if (result.rows.length > 0) { //update
+            let upd = `UPDATE GRIMOIRE SET animamentia = ${req.body.animaMentia}, acquadefensia = ${req.body.aquaDefensia}, ` +
+                      `ignispotentia = ${req.body.ignisPotentia}, terraeresistentia = ${req.body.terraeResistentia}, ` +
+                      `arialiteratus = ${req.body.ariaLiteratus} WHERE arcanusid = ${req.body.arcanusId}`;
+
+            db.query(upd, async (err) => {
+                if (err) {
+                    res.send({
+                        status: false,
+                        msg: err
+                    });
+        
+                    return;
+                }
+
+                res.send({
+                    status: true,
+                    msg: 'Grimorio atualizado com sucesso!'
+                });
+            })
+        } else { //insert
+            let ist = `INSERT INTO GRIMOIRE (arcanusid, animamentia, acquadefensia, ignispotentia, terraeresistentia, arialiteratus) ` +
+                      `VALUES (${req.body.arcanusId}, ${req.body.animaMentia}, ${req.body.aquaDefensia}, ${req.body.ignisPotentia}, ` +
+                      `${req.body.terraeResistentia}, ${req.body.ariaLiteratus})`;
+
+            db.query(ist, async (err) => {
+                if (err) {
+                    res.send({
+                        status: false,
+                        msg: err
+                    });
+        
+                    return;
+                }
+
+                res.send({
+                    status: true,
+                    msg: 'Grimorio incluído com sucesso!'
+                });
+            });
+        }
+    });
+}
