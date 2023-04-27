@@ -457,7 +457,7 @@ module.exports.getMagicaes = async(req, res) => {
         if (result.rows.length > 0) {
             res.send({
                 status: true,
-                result: result.rows[0]
+                result: result.rows
             });
         } else {
             res.send({
@@ -469,5 +469,72 @@ module.exports.getMagicaes = async(req, res) => {
 }
 
 module.exports.setMagicaes = async(req, res) => {
-    console.log(req.body.magicaes);
+    var qry = `SELECT * FROM MAGICAES WHERE arcanusid = ${req.body.arcanusId}`;
+
+    db.query(qry, async (err, result) => {
+        if (err) {
+            res.send({
+                status: false,
+                msg: err
+            });
+
+            return;
+        }
+
+        if (result.rows.length > 0) { //update
+            let upd = `BEGIN; `;
+
+            for (var i = 0; i < req.body.magicaes.length; i++) {
+                if (req.body.magicaes[i].id == 0) {
+                    upd = upd + `INSERT INTO MAGICAES (arcanusid, magicae, val) VALUES (${req.body.arcanusId}, '${req.body.magicaes[i].magicae}', ${req.body.magicaes[i].value}); `;
+                } else {
+                    upd = upd + `UPDATE MAGICAES set val = ${req.body.magicaes[i].value} WHERE id = ${req.body.magicaes[i].id}; `;
+                }
+            }
+
+            upd = upd + `COMMIT;`;
+
+            db.query(upd, async(err, result) => {
+                if (err) {
+                    res.send({
+                        status: false,
+                        msg: err
+                    });
+        
+                    return;
+                }
+
+                res.send({
+                    status: true,
+                    msg: 'Magicaes salvas com sucesso!'
+                });
+            });
+        } else { //insert
+            let ist = `INSERT INTO MAGICAES (arcanusid, magicae, val) VALUES `;
+
+            for (var i = 0 ; i < req.body.magicaes.length; i++) {
+                if (i == req.body.magicaes.length - 1) {
+                    ist = ist + `(${req.body.arcanusId}, '${req.body.magicaes[i].magicae}', ${req.body.magicaes[i].value});`;
+                } else {
+                    ist = ist + `(${req.body.arcanusId}, '${req.body.magicaes[i].magicae}', ${req.body.magicaes[i].value}), `;
+                }
+            }
+
+            db.query(ist, async (err) => {
+                if (err) {
+                    res.send({
+                        status: false,
+                        msg: err
+                    });
+        
+                    return;
+                }
+
+                res.send({
+                    status: true,
+                    msg: 'Magicaes inseridas com sucesso!'
+                });
+            });
+        }
+    });
 }
